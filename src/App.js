@@ -1,11 +1,13 @@
 import React from 'react';
-import DataTableComponent from './components/dataTable/DataTableComponent';
+import DataTableContainer from './components/dataTable/DataTableContainer';
 import './App.css';
+
+const PHOTOS_URL = 'https://jsonplaceholder.typicode.com/photos';
 
 function App() {
   return (
     <div className="wrapper App">
-      <DataTableComponent />
+      <DataTableContainer dataUrl={PHOTOS_URL} />
     </div>
   );
 }
