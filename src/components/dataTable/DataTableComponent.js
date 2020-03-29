@@ -1,11 +1,11 @@
 import React from 'react';
 import './data-table.css';
 
-function TableHeader(props) {
+const TableHeader = function(props) {
   return (
-    <div className="data-table-header flex-row">
+    <div className="divTableRow">
       {props.columns.map((column) => (
-        <div className="data-table-header-cell flex-item" key={column.id}>
+        <div className="divTableHead" key={column.id}>
           {column.label}
         </div>
       ))}
@@ -13,15 +13,36 @@ function TableHeader(props) {
   )
 }
 
+const TableRowCells = function(props) {
+  return (
+      props.columns.map((column) => (
+        <div className="divTableCell" key={column.id}>
+          {props.row[column.id]}
+        </div>
+      ))
+  )
+}
+
+const TableRows = function(props) {
+  return (
+    props.rows.map((row) => (
+      <div className="divTableRow" key={row.id}>
+        <TableRowCells columns={props.columns} row={row} />
+      </div>
+    ))
+  )
+}
+
 
 function DataTableComponent(props) {
   return(
-    <div className="data-table">
-      <TableHeader columns={props.columns} />
+    <div className="divTable">
+      <div className="divTableBody">
+        <TableHeader columns={props.columns} />
+        <TableRows columns={props.columns} rows={props.rows} />
+      </div>
     </div>
   )
 };
-
-
 
 export default DataTableComponent;
