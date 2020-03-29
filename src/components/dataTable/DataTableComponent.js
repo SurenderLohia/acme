@@ -1,9 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 function DataTableComponent(props) {
-  useEffect(() => {
-    props.getData();
-  }, []);
   return(
     <div>
       <h2>Data Table Component</h2>
