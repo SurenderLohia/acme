@@ -1,14 +1,14 @@
 const columnDefinition = [
   {
-    id: 'albumId',
-    label: 'Album Id',
-    numberic: true,
-    width: '100px'
-  },
-  {
     id: 'id',
     label: 'ID',
     numberic: true,
+  },
+  {
+    id: 'albumId',
+    label: 'Album Id',
+    numberic: true,
+    width: '100px',
   },
   {
     id: 'title',

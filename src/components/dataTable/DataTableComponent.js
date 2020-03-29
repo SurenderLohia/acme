@@ -1,9 +1,12 @@
 import React from 'react';
 import './data-table.css';
 
-const TableHeader = function(props) {
+const TableHeaderRow = function(props) {
   return (
     <div className="divTableRow">
+      <div className="divTableHead">
+        <input type="checkbox" />
+      </div> 
       {props.columns.map((column) => (
         <div className="divTableHead" key={column.id}>
           {column.label}
@@ -13,33 +16,36 @@ const TableHeader = function(props) {
   )
 }
 
-const TableRowCells = function(props) {
+const TableBodyRow = function(props) {
+  const { row } = props;
   return (
-      props.columns.map((column) => (
+    <div className="divTableRow" key={row.id}>
+      <div className="divTableCell">
+        <input type="checkbox" />
+      </div>
+      {props.columns.map((column) => (
         <div className="divTableCell" key={column.id}>
           {props.row[column.id]}
         </div>
-      ))
+      ))}
+  </div>
   )
 }
 
-const TableRows = function(props) {
+const TableBodyRows = function(props) {
   return (
     props.rows.map((row) => (
-      <div className="divTableRow" key={row.id}>
-        <TableRowCells columns={props.columns} row={row} />
-      </div>
+      <TableBodyRow row={row} columns={props.columns} key={row.id} />
     ))
   )
 }
-
 
 function DataTableComponent(props) {
   return(
     <div className="divTable">
       <div className="divTableBody">
-        <TableHeader columns={props.columns} />
-        <TableRows columns={props.columns} rows={props.rows} />
+        <TableHeaderRow columns={props.columns} />
+        <TableBodyRows columns={props.columns} rows={props.rows} />
       </div>
     </div>
   )

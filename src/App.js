@@ -6,44 +6,30 @@ import columnDefinition from './columnDefinition';
 
 const PHOTOS_URL = 'https://jsonplaceholder.typicode.com/photos';
 
-const getColumns = function(row) {
-  const columns = Object.keys(row);
-  const allColumnDefinition = [];
-  let itemColumnDefinition;
-
-  columns.forEach((item) => {
-    itemColumnDefinition = columnDefinition.find((columnDefinition_item) => columnDefinition_item.id === item);
-    if(itemColumnDefinition) {
-      allColumnDefinition.push(itemColumnDefinition);
-    }
-  });
-
-  return allColumnDefinition;
-}
-
 function App() {
-  const [columns, setColumns] = useState([]);
   const [rows, setRows] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
       const result = await (await fetch(PHOTOS_URL)).json();
-      const columns = getColumns(result[0]);
-  
-      setColumns(columns);
+      
       setRows(result.slice(0, 10));
-      setIsLoading(isLoading);
+      setIsLoading(false);
     }
     
     fetchData.bind(this)();
   }, []);
   return (
     <div className="wrapper App pt2">
-      <DataTable
-        columns={columns}
-        rows={rows}
-       />
+      { isLoading ? 
+        <div>Loading...</div>:
+        <DataTable
+          columns={columnDefinition}
+          rows={rows}
+        />
+      }
+      
     </div>
   );
 }
