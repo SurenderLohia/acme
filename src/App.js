@@ -22,7 +22,7 @@ const getColumns = function(row) {
 }
 
 function App() {
-  const [colums, setColumns] = useState([]);
+  const [columns, setColumns] = useState([]);
   const [rows, setRows] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -31,17 +31,17 @@ function App() {
       const result = await (await fetch(PHOTOS_URL)).json();
       const columns = getColumns(result[0]);
   
-      setColumns({columns});
-      setRows({rows: result.slice(0, 10)});
-      setIsLoading({isLoading});
+      setColumns(columns);
+      setRows(result.slice(0, 10));
+      setIsLoading(isLoading);
     }
     
     fetchData.bind(this)();
   }, []);
   return (
-    <div className="wrapper App">
+    <div className="wrapper App pt2">
       <DataTable
-        columns={colums}
+        columns={columns}
         rows={rows}
        />
     </div>
