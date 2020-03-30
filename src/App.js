@@ -42,6 +42,9 @@ function App() {
             console.log('rowData', rowData);
             console.log('rowIndex', rowIndex);
           }}
+          onSelectionChange={(selectedRows) => {
+            console.log('selectedRows', selectedRows);
+          }}
         />
       }
       
