@@ -1,5 +1,11 @@
 const columnDefinition = [
   {
+    id: 'thumbnailUrl',
+    label: 'Thumbnail',
+    valueType: 3,
+    wordWrap: true
+  },
+  {
     id: 'id',
     label: 'ID',
     valueType: 2,
@@ -14,7 +20,7 @@ const columnDefinition = [
   {
     id: 'title',
     label: 'Title',
-    valueType: 3,
+    valueType: 4,
     width: '370px'
   },
   {
@@ -22,13 +28,7 @@ const columnDefinition = [
     label: 'URL',
     valueType: 1,
     wordWrap: true
-  },
-  {
-    id: 'thumbnailUrl',
-    label: 'Thumbnail Url',
-    valueType: 1,
-    wordWrap: true
-  },
+  }
 ]
 
 export default columnDefinition

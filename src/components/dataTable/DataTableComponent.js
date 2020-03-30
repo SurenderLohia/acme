@@ -3,7 +3,6 @@ import './data-table.css';
 import { valueTypes } from './constants';
 
 const TableRowCellWithText = function(props) {
-  console.log('TableRowCellWithText');
   const { column, row } = props;
   return (
     <div 
@@ -18,8 +17,22 @@ const TableRowCellWithText = function(props) {
   )
 }
 
+const TableRowCellWithImg = function(props) {
+  const { column, row } = props;
+  return (
+    <div 
+      className={
+        'divTableCell' + 
+        (column.textAlign ? ` text-align-${column.textAlign}` : '') +
+        (column.wordWrap ? ' word-wrap': '')
+      }
+    >
+      <img className="table-cell-thumbnail-image" src={row[column.id]} alt={row[column.id]} />
+    </div>
+  )
+}
+
 const TableRowCellWithHtmlElement = function(props) {
-  console.log('TableRowCellWithHtmlElement');
   const { column, row } = props;
   return (
     <div 
@@ -71,15 +84,35 @@ const TableBodyRow = function(props) {
       <div className="divTableCell">
         <input type="checkbox" />
       </div>
-      {columns.map((column) => (
-        column.valueType === valueTypes.htmlElement ?
-          (<TableRowCellWithHtmlElement column={column} row={row} key={column.id} />) :
-          (<TableRowCellWithText column={column} row={row} key={column.id} />)
-        )
+      {columns.map((column) => {
+        let RenderElement;
+        switch (column.valueType) {
+          case valueTypes.htmlElement: {
+            RenderElement = <TableRowCellWithHtmlElement column={column} row={row} key={column.id} />
+            break;
+          }
+
+          case valueTypes.image: {
+            RenderElement = <TableRowCellWithImg column={column} row={row} key={column.id} />
+            break;
+          }
+        
+          default:
+            RenderElement = <TableRowCellWithText column={column} row={row} key={column.id} />
+            break;
+        }
+        return RenderElement
+      }
       )}
   </div>
   )
 }
+
+
+
+
+
+        
 
 const TableBodyRows = function(props) {
   return (
