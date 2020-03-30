@@ -27,6 +27,10 @@ function App() {
         <DataTable
           columns={columnDefinition}
           rows={rows}
+          onRowClick={(rowData, rowIndex) => {
+            console.log('rowData', rowData);
+            console.log('rowIndex', rowIndex);
+          }}
         />
       }
       

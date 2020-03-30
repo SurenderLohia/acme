@@ -7,11 +7,21 @@ class DataTable extends Component {
     this.state = {
       selectedRows: []
     }
+
+    this.onRowClick = this.onRowClick.bind(this);
+  };
+
+  onRowClick(rowData, rowIndex) {
+    this.props.onRowClick(rowData, rowIndex)
   }
 
   render() {
     return(
-      <DataTableComponent {...this.props} />
+      <DataTableComponent
+        rows={this.props.rows}
+        columns={this.props.columns}
+        onRowClick={this.onRowClick}
+      />
     )
   }
 }

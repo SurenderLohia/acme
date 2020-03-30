@@ -17,9 +17,13 @@ const TableHeaderRow = function(props) {
 }
 
 const TableBodyRow = function(props) {
-  const { row } = props;
+  const { row, index, onRowClick } = props;
   return (
-    <div className="divTableRow" key={row.id}>
+    <div 
+      className="divTableRow" 
+      key={row.id} 
+      onClick={() => onClickTableBodyRow(row, index, onRowClick)}
+    >
       <div className="divTableCell">
         <input type="checkbox" />
       </div>
@@ -34,10 +38,20 @@ const TableBodyRow = function(props) {
 
 const TableBodyRows = function(props) {
   return (
-    props.rows.map((row) => (
-      <TableBodyRow row={row} columns={props.columns} key={row.id} />
+    props.rows.map((row, i) => (
+      <TableBodyRow 
+        row={row} 
+        columns={props.columns} 
+        key={row.id} 
+        onRowClick={props.onRowClick}
+        index={i}
+      />
     ))
   )
+}
+
+function onClickTableBodyRow(rowData, rowIndex, onRowClick) {
+  onRowClick(rowData, rowIndex);
 }
 
 function DataTableComponent(props) {
@@ -45,7 +59,11 @@ function DataTableComponent(props) {
     <div className="divTable">
       <div className="divTableBody">
         <TableHeaderRow columns={props.columns} />
-        <TableBodyRows columns={props.columns} rows={props.rows} />
+        <TableBodyRows
+          columns={props.columns}
+          rows={props.rows}
+          onRowClick={props.onRowClick} 
+        />
       </div>
     </div>
   )
