@@ -1,5 +1,38 @@
 import React from 'react';
 import './data-table.css';
+import { valueTypes } from './constants';
+
+const TableRowCellWithText = function(props) {
+  console.log('TableRowCellWithText');
+  const { column, row } = props;
+  return (
+    <div 
+      className={
+        'divTableCell' + 
+        (column.textAlign ? ` text-align-${column.textAlign}` : '') +
+        (column.wordWrap ? ' word-wrap': '')
+      }
+    >
+        {row[column.id]}
+    </div>
+  )
+}
+
+const TableRowCellWithHtmlElement = function(props) {
+  console.log('TableRowCellWithHtmlElement');
+  const { column, row } = props;
+  return (
+    <div 
+      className={
+        'divTableCell' + 
+        (column.textAlign ? ` text-align-${column.textAlign}` : '') +
+        (column.wordWrap ? ' word-wrap': '')
+      }
+      dangerouslySetInnerHTML={{__html: row[column.id]}}
+    >
+    </div>
+  )
+}
 
 const TableHeaderRow = function(props) {
   return (
@@ -9,10 +42,11 @@ const TableHeaderRow = function(props) {
       </div> 
       {props.columns.map((column) => (
         <div 
-          className={
-            'divTableHead' +
-            (column.textAlign ? ` text-align-${column.textAlign}` : '') } key={column.id}
-          style={{width: column.width? column.width: 'auto' }}
+        className={
+          'divTableHead' +
+          (column.textAlign ? ` text-align-${column.textAlign}` : '') }
+        style={{width: column.width? column.width: 'auto' }}
+        key={column.id}
         >
           {column.label}
         </div>
@@ -38,16 +72,11 @@ const TableBodyRow = function(props) {
         <input type="checkbox" />
       </div>
       {columns.map((column) => (
-        <div 
-          className={
-            'divTableCell' + 
-            (column.textAlign ? ` text-align-${column.textAlign}` : '') +
-            (column.wordWrap ? ' word-wrap': '')
-          }
-          key={column.id}>
-            {props.row[column.id]}
-        </div>
-      ))}
+        column.valueType === valueTypes.htmlElement ?
+          (<TableRowCellWithHtmlElement column={column} row={row} key={column.id} />) :
+          (<TableRowCellWithText column={column} row={row} key={column.id} />)
+        )
+      )}
   </div>
   )
 }
