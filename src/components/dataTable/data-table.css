@@ -33,3 +33,23 @@
 .divTableHead {
   font-weight: bold;
 }
+
+.text-align-left {
+	text-align: left;
+}
+
+.text-align-right {
+	text-align: right;
+}
+
+.text-align-center {
+	text-align: center;
+}
+
+.word-wrap {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  word-break: break-all;
+  white-space: normal;
+}
+

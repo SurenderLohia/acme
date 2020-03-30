@@ -8,7 +8,12 @@ const TableHeaderRow = function(props) {
         <input type="checkbox" />
       </div> 
       {props.columns.map((column) => (
-        <div className="divTableHead" key={column.id}>
+        <div 
+          className={
+            'divTableHead' +
+            (column.textAlign ? ` text-align-${column.textAlign}` : '') } key={column.id}
+          style={{width: column.width? column.width: 'auto' }}
+        >
           {column.label}
         </div>
       ))}
@@ -17,19 +22,30 @@ const TableHeaderRow = function(props) {
 }
 
 const TableBodyRow = function(props) {
-  const { row, index, onRowClick } = props;
+  const { 
+    row, 
+    index,
+    onRowClick,
+    columns
+   } = props;
   return (
     <div 
-      className="divTableRow" 
+      className="divTableRow"
       key={row.id} 
       onClick={() => onClickTableBodyRow(row, index, onRowClick)}
     >
       <div className="divTableCell">
         <input type="checkbox" />
       </div>
-      {props.columns.map((column) => (
-        <div className="divTableCell" key={column.id}>
-          {props.row[column.id]}
+      {columns.map((column) => (
+        <div 
+          className={
+            'divTableCell' + 
+            (column.textAlign ? ` text-align-${column.textAlign}` : '') +
+            (column.wordWrap ? ' word-wrap': '')
+          }
+          key={column.id}>
+            {props.row[column.id]}
         </div>
       ))}
   </div>
