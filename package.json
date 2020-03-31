@@ -16,10 +16,16 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "cross-env CI=true react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm test",
+      "pre-push": "npm test"
+    }
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -37,6 +43,8 @@
     ]
   },
   "devDependencies": {
-    "gh-pages": "^2.2.0"
+    "cross-env": "^7.0.2",
+    "gh-pages": "^2.2.0",
+    "husky": "^4.2.3"
   }
 }
