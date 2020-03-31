@@ -60,11 +60,11 @@ const DataTableBodyRow = function(props) {
     onRowClick,
     columns,
     onChangeTableRowCheckbox,
-    onSelectionChange
+    onSelectionChange,
+    selectedRows
    } = props.data;
 
    const row = rows[index];
-
   return (
     <div 
       key={row.id} 
@@ -73,7 +73,11 @@ const DataTableBodyRow = function(props) {
     >
       <div className={'Rtable-row' + (index % 2 !== 0 ? ' is-striped' : '') }>
       <div className="Rtable-cell select-item-cell">
-        <input type="checkbox" onChange={(e) => onChangeTableRowCheckbox(e, onSelectionChange)} value={row.id} />
+        <input 
+          type="checkbox" 
+          onChange={(e) => onChangeTableRowCheckbox(e, onSelectionChange)} value={row.id}
+          checked={selectedRows === 'All' || (selectedRows instanceof Set && selectedRows.has(`${row.id}`))}
+        />
       </div>
       {columns.map((column) => {
         let RenderElement;

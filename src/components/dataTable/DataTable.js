@@ -18,7 +18,12 @@ function DataTable(props) {
   const onChangeTableRowCheckbox = (e) => {
     const value = e.target.value;
     if(value === 'All') {
-      setSelectedRows(value);
+      if(selectedRows === 'All') {
+        setSelectedRows('');
+      } else {
+        setSelectedRows(value);
+      }
+      
     } else {
       if (selectedRows instanceof Set) {
         if(selectedRows.has(value)) {
@@ -48,6 +53,7 @@ function DataTable(props) {
       <DataTableHeaderRow
         columns={props.columns}
         onChangeTableRowCheckbox={onChangeTableRowCheckbox}
+        selectedRows={selectedRows}
       />
         <List
           itemData={{
@@ -55,7 +61,8 @@ function DataTable(props) {
             columns,  
             onRowClick,
             onChangeTableRowCheckbox,
-            onSelectionChange
+            onSelectionChange,
+            selectedRows
           }}
           className="List"
           height={window.innerHeight - tableHeaderHeight}

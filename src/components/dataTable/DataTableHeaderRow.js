@@ -8,6 +8,7 @@ const DataTableHeaderRow = function(props) {
         <input type="checkbox"
           value="All"
           onChange={(e) => props.onChangeTableRowCheckbox(e, props.onSelectionChange)}
+          checked={props.selectedRows === 'All'}
          />
       </div> 
       {props.columns.map((column) => (
