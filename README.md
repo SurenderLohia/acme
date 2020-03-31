@@ -1,4 +1,4 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+[![Build Status](https://travis-ci.org/SurenderLohia/acme.svg?branch=master)](https://travis-ci.org/SurenderLohia/acme)
 
 ## Available Scripts
 
