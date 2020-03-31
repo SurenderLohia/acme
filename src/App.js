@@ -16,14 +16,23 @@ function App() {
 
       // to check valueType htmlElement option:
       const rowWithHtmlElement = {
-        "albumId": 11,
-        "id": 11,
+        "albumId": 0,
+        "id": 0,
         "title": '<div style="color: #7B1FA2">This is a html element. Set valueType 3 to render html elemenet</div>',
         "url": "https://via.placeholder.com/600/92c952",
         "thumbnailUrl": "https://via.placeholder.com/150/92c952",
       }
 
-      const rowsWithHhtmlElement = [...result.slice(0, 10), rowWithHtmlElement];
+      //const rowsWithHhtmlElement = [rowWithHtmlElement, ...result.slice(0, 5000)];
+
+      //To test 50k
+      const rowsWithHhtmlElement = [
+        rowWithHtmlElement, ...result, ...result,
+        ...result, ...result,
+        ...result, ...result,
+        ...result, ...result,
+        ...result, ...result
+      ];
       
       setRows(rowsWithHhtmlElement);
       setIsLoading(false);
@@ -32,7 +41,7 @@ function App() {
     fetchData.bind(this)();
   }, []);
   return (
-    <div className="wrapper App pt2">
+    <div className="wrapper App">
       { isLoading ? 
         <div>Loading...</div>:
         <DataTable

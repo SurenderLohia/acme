@@ -5,4 +5,12 @@ const valueTypes = {
   htmlElement: 4
 }
 
-export { valueTypes };
+const columnClasses = {
+  thumbnailUrl: 'thumbnail-cell',
+  id: 'id-cell',
+  albumId: 'album-id-cell',
+  title: 'title-cell',
+  url: 'url-cell'
+}
+
+export { valueTypes, columnClasses };

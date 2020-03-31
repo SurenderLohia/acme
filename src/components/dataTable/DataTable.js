@@ -1,15 +1,17 @@
 import React, {useState, useEffect} from 'react';
+import { FixedSizeList as List } from 'react-window';
 import './data-table.css';
-import { valueTypes } from './constants';
+import { valueTypes, columnClasses } from './constants';
 
 const TableRowCellWithText = function(props) {
   const { column, row } = props;
   return (
     <div 
       className={
-        'divTableCell' + 
+        'Rtable-cell' + 
         (column.textAlign ? ` text-align-${column.textAlign}` : '') +
-        (column.wordWrap ? ' word-wrap': '')
+        (column.wordWrap ? ' word-wrap': '') +
+        ` ${columnClasses[column.id]}`
       }
     >
         {row[column.id]}
@@ -22,9 +24,10 @@ const TableRowCellWithImg = function(props) {
   return (
     <div 
       className={
-        'divTableCell' + 
+        'Rtable-cell' + 
         (column.textAlign ? ` text-align-${column.textAlign}` : '') +
-        (column.wordWrap ? ' word-wrap': '')
+        (column.wordWrap ? ' word-wrap': '') +
+        ` ${columnClasses[column.id]}`
       }
     >
       <img className="table-cell-thumbnail-image" src={row[column.id]} alt={row[column.id]} />
@@ -37,9 +40,10 @@ const TableRowCellWithHtmlElement = function(props) {
   return (
     <div 
       className={
-        'divTableCell' + 
+        'Rtable-cell' + 
         (column.textAlign ? ` text-align-${column.textAlign}` : '') +
-        (column.wordWrap ? ' word-wrap': '')
+        (column.wordWrap ? ' word-wrap': '') +
+        ` ${columnClasses[column.id]}`
       }
       dangerouslySetInnerHTML={{__html: row[column.id]}}
     >
@@ -49,8 +53,8 @@ const TableRowCellWithHtmlElement = function(props) {
 
 const TableHeaderRow = function(props) {
   return (
-    <div className="divTableRow">
-      <div className="divTableHead">
+    <div className="Rtable-row Rtable-row--head">
+      <div className="Rtable-cell select-item-cell column-heading">
         <input type="checkbox"
           value="All"
           onChange={(e) => props.onChangeTableRowCheckbox(e, props.onSelectionChange)}
@@ -59,9 +63,12 @@ const TableHeaderRow = function(props) {
       {props.columns.map((column) => (
         <div 
         className={
-          'divTableHead' +
-          (column.textAlign ? ` text-align-${column.textAlign}` : '') }
-        style={{width: column.width? column.width: 'auto' }}
+          'Rtable-cell column-heading' +
+          (column.textAlign ? ` text-align-${column.textAlign}` : '') +
+          ` ${columnClasses[column.id]}`
+        }
+        // Todo: need to fix
+        //style={{width: column.width? column.width: 'auto' }}
         key={column.id}
         >
           {column.label}
@@ -73,20 +80,28 @@ const TableHeaderRow = function(props) {
 
 const TableBodyRow = function(props) {
   const { 
-    row, 
     index,
+    style
+   } = props;
+
+   const {
+    rows,
     onRowClick,
     columns,
     onChangeTableRowCheckbox,
     onSelectionChange
-   } = props;
+   } = props.data;
+
+   const row = rows[index];
+
   return (
     <div 
-      className="divTableRow"
       key={row.id} 
       onClick={() => onClickTableBodyRow(row, index, onRowClick)}
+      style={style}
     >
-      <div className="divTableCell">
+      <div className={'Rtable-row' + (index % 2 !== 0 ? ' is-striped' : '') }>
+      <div className="Rtable-cell select-item-cell">
         <input type="checkbox" onChange={(e) => onChangeTableRowCheckbox(e, onSelectionChange)} value={row.id} />
       </div>
       {columns.map((column) => {
@@ -109,23 +124,8 @@ const TableBodyRow = function(props) {
         return RenderElement
       }
       )}
+    </div>
   </div>
-  )
-}
-        
-const TableBodyRows = function(props) {
-  return (
-    props.rows.map((row, i) => (
-      <TableBodyRow 
-        row={row} 
-        columns={props.columns} 
-        key={row.id} 
-        onRowClick={props.onRowClick}
-        index={i}
-        onChangeTableRowCheckbox={props.onChangeTableRowCheckbox}
-        onSelectionChange={props.onSelectionChange}
-      />
-    ))
   )
 }
 
@@ -136,6 +136,14 @@ function onClickTableBodyRow(rowData, rowIndex, onRowClick) {
 function DataTable(props) {
   const [ selectedRows, setSelectedRows ] = useState();
 
+  const {
+    rows,
+    columns,
+    onRowClick,
+    onSelectionChange
+  } = props;
+
+  
   const onChangeTableRowCheckbox = (e) => {
     const value = e.target.value;
     if(value === 'All') {
@@ -161,21 +169,30 @@ function DataTable(props) {
     props.onSelectionChange(selectedRows);
   }, [props, selectedRows]);
 
+  const outterPadding = 40;
+  const tableHeaderHeight = 50 + outterPadding;
+
   return(
-    <div className="divTable">
-      <div className="divTableBody">
-        <TableHeaderRow 
-          columns={props.columns}
-          onChangeTableRowCheckbox={onChangeTableRowCheckbox}
-        />
-        <TableBodyRows
-          columns={props.columns}
-          rows={props.rows}
-          onRowClick={props.onRowClick}
-          onSelectionChange={props.onSelectionChange}
-          onChangeTableRowCheckbox={onChangeTableRowCheckbox}
-        />
-      </div>
+    <div className="Rtable">
+      <TableHeaderRow
+        columns={props.columns}
+        onChangeTableRowCheckbox={onChangeTableRowCheckbox}
+      />
+        <List
+          itemData={{
+            rows,
+            columns,  
+            onRowClick,
+            onChangeTableRowCheckbox,
+            onSelectionChange
+          }}
+          className="List"
+          height={window.innerHeight - tableHeaderHeight}
+          itemCount={50000}
+          itemSize={80}
+        >
+         {TableBodyRow}
+        </List>
     </div>
   )
 };

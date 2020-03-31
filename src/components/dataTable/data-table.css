@@ -1,39 +1,63 @@
-/* DivTable.com */
-.divTable{
-	display: table;
-	width: 100%;
-}
-.divTableRow {
-	display: table-row;
-}
-.divTableHeading {
-	background-color: #EEE;
-	display: table-header-group;
-}
-.divTableCell, .divTableHead {
-	border-bottom: 1px solid #ccc;
-	display: table-cell;
-	padding: 10px;
-	vertical-align: middle;
-}
-.divTableHeading {
-	background-color: #EEE;
-	display: table-header-group;
-	font-weight: bold;
-}
-.divTableFoot {
-	background-color: #EEE;
-	display: table-footer-group;
-	font-weight: bold;
-}
-.divTableBody {
-	display: table-row-group;
+/* Flex based table */
+.is-striped {
+	background-color: rgba(233, 200, 147, 0.2);
 }
 
-/* DataTable style */
-.divTableHead {
-  font-weight: bold;
+/* Table column sizing ================================== */
+.select-item-cell {
+	width: 50px;
 }
+.thumbnail-cell {
+	width: 120px;
+}
+.id-cell {
+	width: 120px;
+}
+.album-id-cell {
+	width: 120px;
+}
+.title-cell {
+	width: 58%;
+}
+.url-cell {
+	width: 300px;
+}
+/* Apply styles ================================== */
+.Rtable {
+	display: flex;
+	flex-wrap: wrap;
+	margin: 0 0 3em 0;
+	padding: 0;
+	box-shadow: 0 0 40px rgba(0, 0, 0, 0.2);
+}
+.Rtable .Rtable-row {
+	width: 100%;
+	display: flex;
+}
+.Rtable .Rtable-row .Rtable-cell {
+	box-sizing: border-box;
+	flex-grow: 1;
+	padding: 0.8em 1.2em;
+	overflow: hidden;
+	list-style: none;
+}
+.Rtable .Rtable-row .Rtable-cell.column-heading {
+	background-color: #43bac0;
+	color: white;
+	padding: 1em;
+}
+.Rtable .Rtable-row .Rtable-cell .Rtable-cell--heading {
+	display: none;
+}
+.Rtable .Rtable-row .Rtable-cell .Rtable-cell--content a {
+	font-size: 2em;
+	color: #333;
+}
+.Rtable .Rtable-row .Rtable-cell .Rtable-cell--content .webinar-date {
+	font-weight: 700;
+}
+
+/* End of flex table */
 
 .text-align-left {
 	text-align: left;
@@ -57,5 +81,9 @@
   word-wrap: break-word;
   word-break: break-all;
   white-space: normal;
+}
+
+.List {
+	width: 100%;
 }
 
