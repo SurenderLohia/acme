@@ -18,7 +18,7 @@ function App() {
       const rowWithHtmlElement = {
         "albumId": 0,
         "id": 0,
-        "title": '<div style="color: #7B1FA2">This is a html element. Set valueType 3 to render html elemenet</div>',
+        "title": '<div style="color: #7B1FA2">This is a html element. Set valueType 4 to render html elemenet</div>',
         "url": "https://via.placeholder.com/600/92c952",
         "thumbnailUrl": "https://via.placeholder.com/150/92c952",
       }
