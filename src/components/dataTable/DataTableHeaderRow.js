@@ -1,15 +1,18 @@
 import React from 'react';
 import { columnClasses } from './constants';
 
+const onSelectAllChange = (e, handleSelectAllChange) => {
+  handleSelectAllChange(e)
+}
+
 const DataTableHeaderRow = function(props) {
   return (
     <div className="Rtable-row Rtable-row--head">
       <div className="Rtable-cell select-item-cell column-heading">
         <input type="checkbox"
           value="All"
-          onChange={(e) => props.onChangeTableRowCheckbox(e, props.onSelectionChange)}
-          checked={props.selectedRows === 'All'}
-         />
+          onChange={(e) => onSelectAllChange(e, props.handleSelectAllChange)}
+        />
       </div> 
       {props.columns.map((column) => (
         <div 

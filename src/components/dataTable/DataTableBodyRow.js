@@ -56,6 +56,10 @@ const onClickTableBodyRow = function(e, rowData, rowIndex, onRowClick) {
   }
 }
 
+const onRowCheckboxChange = (e, rowId, handleRowCheckboxChange) => {
+  handleRowCheckboxChange(e, rowId);
+}
+
 const DataTableBodyRow = function(props) {
   const { 
     index,
@@ -66,9 +70,8 @@ const DataTableBodyRow = function(props) {
     rows,
     onRowClick,
     columns,
-    onChangeTableRowCheckbox,
-    onSelectionChange,
-    selectedRows
+    rowsState,
+    handleRowCheckboxChange
    } = props.data;
 
    const row = rows[index];
@@ -82,8 +85,8 @@ const DataTableBodyRow = function(props) {
       <div className="Rtable-cell select-item-cell">
         <input 
           type="checkbox" 
-          onChange={(e) => onChangeTableRowCheckbox(e, onSelectionChange)} value={row.id}
-          checked={selectedRows === 'All' || (selectedRows instanceof Set && selectedRows.has(`${row.id}`))}
+          onChange={(e) => onRowCheckboxChange(e, row.id, handleRowCheckboxChange)} value={row.id}
+          checked={rowsState[row.id].isChecked}
           className="js-row-checkbox"
         />
       </div>

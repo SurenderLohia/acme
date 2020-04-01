@@ -6,7 +6,8 @@ import DataTableHeaderRow from '../DataTableHeaderRow';
 
 let container = null;
 let component = null;
-let onChangeTableRowCheckboxMock;
+let handleSelectAllChangeMock;
+
 
 const columnDefinition = [
   {
@@ -47,11 +48,11 @@ describe('DataTableHeaderRow', function() {
     container = document.createElement("div");
     document.body.appendChild(container);
 
-    onChangeTableRowCheckboxMock = jest.fn();
+    handleSelectAllChangeMock = jest.fn();
 
     component = (<DataTableHeaderRow 
       columns={columnDefinition}
-      onChangeTableRowCheckbox={onChangeTableRowCheckboxMock}/>)
+      handleSelectAllChange={handleSelectAllChangeMock}/>)
   });
 
   afterEach(() => {
@@ -60,7 +61,7 @@ describe('DataTableHeaderRow', function() {
     container.remove();
     container = null;
     component = null;
-    onChangeTableRowCheckboxMock = null;
+    handleSelectAllChangeMock = null;
   });
 
   it("should render Row", () => {
@@ -79,14 +80,14 @@ describe('DataTableHeaderRow', function() {
     expect(container.querySelectorAll('.Rtable-cell').length).toBe(columnDefinition.length + 1);
   });
 
-  it("should call onChangeTableRowCheckbox method on change of checkbox", () => {
+  it("should call handleSelectAllChange method on change of checkbox", () => {
     act(() => {
       render(component, container);
       const checkbox = document.querySelector('input[type="checkbox"]');
       checkbox.dispatchEvent(new MouseEvent("click", { bubbles: true }));
     });
 
-    expect(onChangeTableRowCheckboxMock).toHaveBeenCalledTimes(1);
+    expect(handleSelectAllChangeMock).toHaveBeenCalledTimes(1);
   });
 
   describe('Text Align', function() {

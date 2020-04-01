@@ -6,9 +6,8 @@ import DataTableBodyRow from '../DataTableBodyRow';
 
 let container = null;
 let component = null;
-let onChangeTableRowCheckboxMock;
+let handleRowCheckboxChangeMock;
 let onRowClickMock;
-let onSelectionChangeMock;
 
 const columnDefinition = [
   {
@@ -67,15 +66,21 @@ describe('DataTableBodyRow', function() {
     document.body.appendChild(container);
 
     onRowClickMock = jest.fn();
-    onChangeTableRowCheckboxMock = jest.fn();
-    onSelectionChangeMock = jest.fn();
+    handleRowCheckboxChangeMock = jest.fn();
 
     const data = {
       rows,
       columns: columnDefinition,
       onRowClick: onRowClickMock,
-      onChangeTableRowCheckbox: onChangeTableRowCheckboxMock,
-      onSelectionChange: onSelectionChangeMock
+      handleRowCheckboxChange: handleRowCheckboxChangeMock,
+      rowsState: {
+        '1':  {
+          isChecked: false
+        },
+        '2':  {
+          isChecked: false
+        }
+      }
     }
 
     component = (<DataTableBodyRow 
@@ -92,8 +97,7 @@ describe('DataTableBodyRow', function() {
     container = null;
     component = null;
     onRowClickMock = null;
-    onChangeTableRowCheckboxMock = null;
-    onSelectionChangeMock = null;
+    handleRowCheckboxChangeMock = null;
   });
 
   it("should render Row", () => {
@@ -119,7 +123,7 @@ describe('DataTableBodyRow', function() {
       checkbox.dispatchEvent(new MouseEvent("click", { bubbles: true }));
     });
 
-    expect(onChangeTableRowCheckboxMock).toHaveBeenCalledTimes(1);
+    expect(handleRowCheckboxChangeMock).toHaveBeenCalledTimes(1);
   });
 
   describe('Text Align', function() {

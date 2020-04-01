@@ -4,7 +4,7 @@ import './App.css';
 
 import columnDefinition from './columnDefinition';
 
-const PHOTOS_URL = 'https://jsonplaceholder.typicode.com/photos';
+const PHOTOS_URL = 'https://jsonplaceholder.typicode.com/photos?_page=1&_limit=20';
 
 function App() {
   const [rows, setRows] = useState([]);
