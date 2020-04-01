@@ -49,6 +49,13 @@ const TableRowCellWithHtmlElement = function(props) {
   )
 }
 
+const onClickTableBodyRow = function(e, rowData, rowIndex, onRowClick) {
+  const isClickedOnRowCheckbox = e.target.getAttribute('class').includes('js-row-checkbox');
+  if(!isClickedOnRowCheckbox) {
+    onRowClick(rowData, rowIndex);
+  }
+}
+
 const DataTableBodyRow = function(props) {
   const { 
     index,
@@ -68,7 +75,7 @@ const DataTableBodyRow = function(props) {
   return (
     <div 
       key={row.id} 
-      onClick={() => onClickTableBodyRow(row, index, onRowClick)}
+      onClick={(e) => onClickTableBodyRow(e, row, index, onRowClick)}
       style={style}
     >
       <div className={'Rtable-row' + (index % 2 !== 0 ? ' is-striped' : '') }>
@@ -77,6 +84,7 @@ const DataTableBodyRow = function(props) {
           type="checkbox" 
           onChange={(e) => onChangeTableRowCheckbox(e, onSelectionChange)} value={row.id}
           checked={selectedRows === 'All' || (selectedRows instanceof Set && selectedRows.has(`${row.id}`))}
+          className="js-row-checkbox"
         />
       </div>
       {columns.map((column) => {
@@ -102,10 +110,6 @@ const DataTableBodyRow = function(props) {
     </div>
   </div>
   )
-}
-
-const onClickTableBodyRow = function(rowData, rowIndex, onRowClick) {
-  onRowClick(rowData, rowIndex);
 }
 
 export default DataTableBodyRow;
