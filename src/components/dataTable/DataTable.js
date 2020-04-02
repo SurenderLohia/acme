@@ -1,5 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import { FixedSizeList as List } from 'react-window';
+import InfiniteLoader from "react-window-infinite-loader";
+
 import './data-table.css';
 
 import DataTableHeaderRow from './DataTableHeaderRow';
@@ -18,11 +20,15 @@ const getRowsInitialState = function(rows) {
 
 function DataTable(props) {
   const [ rowsState,  setRowsState ] = useState(getRowsInitialState(props.rows));
+  const [ page, setPage ] = useState(props.page);
 
   const {
     rows,
     columns,
-    onRowClick
+    onRowClick,
+    hasNextPage,
+    isNextPageLoading,
+    loadNextPage
   } = props;
 
   const handleSelectAllChange = (e) => {
@@ -46,33 +52,6 @@ function DataTable(props) {
     setRowsState(newRowsState);
   }
 
-  //Todo: Need to remove
-  // const onChangeTableRowCheckbox = (e) => {
-  //   const value = e.target.value;
-  //   if(value === 'All') {
-  //     if(selectedRows === 'All') {
-  //       setSelectedRows('');
-  //     } else {
-  //       setSelectedRows(value);
-  //     }
-      
-  //   } else {
-  //     if (selectedRows instanceof Set) {
-  //       if(selectedRows.has(value)) {
-  //         let newSelectedRows = new Set(selectedRows);
-  //         newSelectedRows.delete(value);
-  //         setSelectedRows(newSelectedRows);
-  //       } else {
-  //         let newSelectedRows = new Set(selectedRows);
-  //         newSelectedRows.add(value);
-  //         setSelectedRows(newSelectedRows);
-  //       }
-  //     } else {
-  //       setSelectedRows(new Set(value));
-  //     }
-  //   }
-  // }
-  
   const getSelctedRows = (rows) => {
     const selectedRows = [];
     const all = 'All';
@@ -101,29 +80,64 @@ function DataTable(props) {
   const outterPadding = 40;
   const tableHeaderHeight = 50 + outterPadding;
 
+  // Infinity Loader
+
+  // If there are more items to be loaded then add an extra row to hold a loading indicator.
+  const itemCount = hasNextPage ? rows.length + 1 : rows.length;
+
+  // Only load 1 page of items at a time.
+  // Pass an empty callback to InfiniteLoader in case it asks us to load more than once.
+  const loadMoreItems = isNextPageLoading ? () => {} : loadNextPage;
+
+  // Every row is loaded except for our loading indicator row.
+  const isItemLoaded = index => !hasNextPage || index < rows.length;
+
+  const onLoadMoreItems = (query) => {
+    if(!isNextPageLoading) {
+      setPage(query.page);
+    }
+    
+    loadMoreItems(query);
+  }
+
   return(
     <div className="Rtable">
       <DataTableHeaderRow
         columns={props.columns}
         handleSelectAllChange={handleSelectAllChange}
       />
+      <InfiniteLoader
+        isItemLoaded={isItemLoaded}
+        itemCount={itemCount}
+        loadMoreItems={() => onLoadMoreItems({page: page + 1})}
+      >
+        {({ onItemsRendered, ref }) => (
         <List
           itemData={{
             rows,
             columns,  
             onRowClick,
             rowsState,
-            handleRowCheckboxChange
+            handleRowCheckboxChange,
+            isItemLoaded
           }}
           className="List"
           height={window.innerHeight - tableHeaderHeight}
-          itemCount={50000}
+          itemCount={itemCount}
           itemSize={80}
+          onItemsRendered={onItemsRendered}
+          ref={ref}
         >
          {DataTableBodyRow}
         </List>
+        )}
+      </InfiniteLoader>
     </div>
   )
 };
+
+DataTable.defaultProps = {
+  page: 1
+}
 
 export default DataTable;

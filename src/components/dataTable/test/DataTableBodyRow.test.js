@@ -8,6 +8,7 @@ let container = null;
 let component = null;
 let handleRowCheckboxChangeMock;
 let onRowClickMock;
+let isItemLoadedMock;
 
 const columnDefinition = [
   {
@@ -67,12 +68,17 @@ describe('DataTableBodyRow', function() {
 
     onRowClickMock = jest.fn();
     handleRowCheckboxChangeMock = jest.fn();
+    isItemLoadedMock = jest.fn();
+
+    isItemLoadedMock.mockReturnValue(true);
+      
 
     const data = {
       rows,
       columns: columnDefinition,
       onRowClick: onRowClickMock,
       handleRowCheckboxChange: handleRowCheckboxChangeMock,
+      isItemLoaded: isItemLoadedMock,
       rowsState: {
         '1':  {
           isChecked: false

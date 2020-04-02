@@ -71,11 +71,26 @@ const DataTableBodyRow = function(props) {
     onRowClick,
     columns,
     rowsState,
-    handleRowCheckboxChange
+    handleRowCheckboxChange,
+    isItemLoaded
    } = props.data;
 
-   const row = rows[index];
+  const row = rows[index] || {};
+
+  const Loader = (props) => {
+    return (
+      <div style={props.style}>
+        <div className="loader flex-row flex-center">
+          <div>
+            Loading...
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
+    !isItemLoaded(index) ? <Loader style={style} /> :
     <div 
       key={row.id} 
       onClick={(e) => onClickTableBodyRow(e, row, index, onRowClick)}
@@ -86,7 +101,7 @@ const DataTableBodyRow = function(props) {
         <input 
           type="checkbox" 
           onChange={(e) => onRowCheckboxChange(e, row.id, handleRowCheckboxChange)} value={row.id}
-          checked={rowsState[row.id].isChecked}
+          checked={rowsState[row.id] && rowsState[row.id].isChecked}
           className="js-row-checkbox"
         />
       </div>

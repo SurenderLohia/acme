@@ -4,59 +4,49 @@ import './App.css';
 
 import columnDefinition from './columnDefinition';
 
-const PHOTOS_URL = 'https://jsonplaceholder.typicode.com/photos?_page=1&_limit=20';
+const PHOTOS_URL = 'https://jsonplaceholder.typicode.com/photos';
+const TOTAL_ROWS = 5000;
 
 function App() {
   const [rows, setRows] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+
+  const [hasNextPage, setHasNextPage] = useState([]);
+  const [isNextPageLoading, setIsNextPageLoading] = useState([]);
+  
+  async function fetchData({page = 1, limit = 12} = {}) {
+    const query = `?_page=${page}&_limit=${limit}`;
+    const result = await fetch((PHOTOS_URL + query));
+    const json = await result.json();
+
+    setHasNextPage(rows.length < TOTAL_ROWS);
+    setIsNextPageLoading(false);
+    setRows([...rows, ...json]);
+  }
+
+  const _loadNextPage = (query) => {
+    fetchData(query);
+  };
 
   useEffect(() => {
-    async function fetchData() {
-      const result = await (await fetch(PHOTOS_URL)).json();
-
-      // to check valueType htmlElement option:
-      const rowWithHtmlElement = {
-        "albumId": 0,
-        "id": 0,
-        "title": '<div style="color: #7B1FA2">This is a html element. Set valueType 4 to render html elemenet</div>',
-        "url": "https://via.placeholder.com/600/92c952",
-        "thumbnailUrl": "https://via.placeholder.com/150/92c952",
-      }
-
-      const rowsWithHhtmlElement = [rowWithHtmlElement, ...result.slice(0, 5000)];
-
-      //: To test 50k
-      // const rowsWithHhtmlElement = [
-      //   rowWithHtmlElement, ...result, ...result,
-      //   ...result, ...result,
-      //   ...result, ...result,
-      //   ...result, ...result,
-      //   ...result, ...result
-      // ];
-      
-      setRows(rowsWithHhtmlElement);
-      setIsLoading(false);
-    }
-    
-    fetchData.bind(this)();
+    fetchData();
+    // eslint-disable-next-line
   }, []);
   return (
     <div className="wrapper App">
-      { isLoading ? 
-        <div>Loading...</div>:
-        <DataTable
-          columns={columnDefinition}
-          rows={rows}
-          onRowClick={(rowData, rowIndex) => {
-            console.log('rowData', rowData);
-            console.log('rowIndex', rowIndex);
-          }}
-          onSelectionChange={(selectedRows) => {
-            console.log('selectedRows', selectedRows);
-          }}
-        />
-      }
-      
+      <DataTable
+        columns={columnDefinition}
+        rows={rows}
+        onRowClick={(rowData, rowIndex) => {
+          console.log('rowData', rowData);
+          console.log('rowIndex', rowIndex);
+        }}
+        onSelectionChange={(selectedRows) => {
+          console.log('selectedRows', selectedRows);
+        }}
+        hasNextPage={hasNextPage}
+        isNextPageLoading={isNextPageLoading}
+        loadNextPage={_loadNextPage}
+      />
     </div>
   );
 }
