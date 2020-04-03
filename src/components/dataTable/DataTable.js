@@ -83,11 +83,13 @@ function DataTable(props) {
 
   useEffect(() => {
     setRowsState(formatRowsState(rowsState, props.rows));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.rows]);
 
   useEffect(() => {
     const selectedRows = getSelctedRows(rowsState);
     props.onSelectionChange(selectedRows);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rowsState]);
 
 
@@ -162,6 +164,7 @@ function DataTable(props) {
               if(column.id !== 'thumbnailUrl') {
                 return <option value={column.id} key={column.id}>{column.label}</option>
               }
+              return '';
             })}
           </select>
         </div>
