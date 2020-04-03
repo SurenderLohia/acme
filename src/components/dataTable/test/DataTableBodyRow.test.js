@@ -71,7 +71,6 @@ describe('DataTableBodyRow', function() {
     isItemLoadedMock = jest.fn();
 
     isItemLoadedMock.mockReturnValue(true);
-      
 
     const data = {
       rows,

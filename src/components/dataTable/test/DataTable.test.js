@@ -1,6 +1,7 @@
 import React from 'react';
 import { unmountComponentAtNode, render } from "react-dom";
 import { act } from "react-dom/test-utils";
+import { fireEvent } from '@testing-library/react'
 
 import DataTable from '../DataTable';
 import MockDataTableBodyRow from '../DataTableBodyRow';
@@ -17,6 +18,7 @@ let container = null;
 let component = null;
 let onRowClickMock;
 let onSelectionChangeMock;
+let loadNextPageMock;
 
 const columnDefinition = [
   {
@@ -132,12 +134,15 @@ describe('DataTable', function() {
 
     onRowClickMock = jest.fn();
     onSelectionChangeMock = jest.fn();
+    loadNextPageMock = jest.fn();
 
     component = (<DataTable 
       columns={columnDefinition}
       rows={rows}
       onRowClick={onRowClickMock}
-      onSelectionChange={onSelectionChangeMock}/>)
+      onSelectionChange={onSelectionChangeMock}
+      loadNextPage={loadNextPageMock}
+      />)
   });
 
   afterEach(() => {
@@ -146,7 +151,6 @@ describe('DataTable', function() {
     container.remove();
     container = null;
     component = null;
-    
   });
 
   it("should render Table", () => {
@@ -156,4 +160,29 @@ describe('DataTable', function() {
 
     expect(container.querySelector('.Rtable')).toBeTruthy();
   });
+
+  describe('Filter', function() {
+    it("should render filter elements", () => {
+      act(() => {
+        render(component, container);
+      });
+  
+      expect(container.querySelector('.search-filter-type')).toBeTruthy();
+      expect(container.querySelector('.search-filter-input')).toBeTruthy();
+    });
+
+    it("on filter with Full-text search", () => {
+      act(() => {
+        render(component, container);
+      });
+
+      const expectedParam = [[], {"searchText": "test"}];
+
+      const form = container.querySelector('.search-filter-container');
+      const input = container.querySelector('.search-filter-input');
+      fireEvent.change(input, {target: {value: 'test'}})
+      fireEvent.submit(form);
+      expect(loadNextPageMock).toHaveBeenCalledWith(...expectedParam);
+    });
+  })
 });
