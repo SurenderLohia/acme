@@ -14,20 +14,29 @@ function App() {
   const [isNextPageLoading, setIsNextPageLoading] = useState([]);
   
   async function fetchData(...args) {
-    const page = args.length === 0 ? 1 : ((args[0] + 10) / 10);
     const limit = 10;
+    const page = args.length === 0 ? 1 : ((args[0] + limit) / 10);
     const argQuery = args[1];
     const searchText = argQuery && argQuery.searchText;
+    const searchType = argQuery && argQuery.searchType;
+
     let query = `?_page=${page}&_limit=${limit}`;
 
-    if(searchText) {
+    setHasNextPage(rows.length < TOTAL_ROWS);
+
+    if(searchType && searchText) {
+      query +=`&${searchType}=${searchText}`
+    } else if(searchText) {
       query += `&q=${searchText}`;
     }
-    
+
     const result = await fetch((PHOTOS_URL + query));
     const json = await result.json();
 
-    setHasNextPage(rows.length < TOTAL_ROWS);
+    if(json.length < limit) {
+      setHasNextPage(false);
+    }
+
     setIsNextPageLoading(false);
 
     // If: It's a first page while init or on searchFiter then replase rows with current result

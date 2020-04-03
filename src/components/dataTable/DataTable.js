@@ -26,6 +26,7 @@ const formatRowsState = function(rowsState, rows = []) {
 function DataTable(props) {
   const [ rowsState,  setRowsState ] = useState({});
   const [ searchText, setSearchText ] = useState('');
+  const [ searchType, setSearchType ] = useState('');
 
   const infiniteLoaderRef = useRef(null);
   const hasMountedRef = useRef(false);
@@ -90,7 +91,7 @@ function DataTable(props) {
   }, [rowsState]);
 
 
-  // Each time the searchText changed we called the method resetloadMoreItemsCache to clear the cache
+  // Each time searchText or searchType changed we called the method resetloadMoreItemsCache to clear the cache
   useEffect(() => {
     // We only need to reset cached items when "searchText" changes.
     // This effect will run on mount too; there's no need to reset in that case.
@@ -100,10 +101,13 @@ function DataTable(props) {
       }
     }
     hasMountedRef.current = true;
-  }, [searchText]);
+  }, [searchText, searchType]);
 
   const outterPadding = 40;
-  const tableHeaderHeight = 50 + outterPadding;
+  const searchBoxheight = 56;
+  const tableHeaderHeight = 50;
+
+  const tableHeight = (window.innerHeight - (outterPadding + searchBoxheight + tableHeaderHeight));
 
   // Infinity Loader
 
@@ -119,10 +123,15 @@ function DataTable(props) {
 
   const onLoadMoreItems = (args) => {
     const query = {
-      searchText
+      searchText,
+      searchType
     }
     
     loadMoreItems(args, query);
+  }
+
+  const onChangeSearchType = (e) => {
+    setSearchType(e.target.value);
   }
 
   const onSearchTextChange = (e) => {
@@ -143,10 +152,16 @@ function DataTable(props) {
     <div className="data-table">
       <form className="search-filter-container flex-row" onSubmit={onSearchSubmit}>
         <div>
-          <select className="search-filter-type">
+          <select 
+            className="search-filter-type" 
+            value={searchType}
+            onChange={onChangeSearchType}
+          >
             <option value="">Filter</option>
             {columns.map((column) => {
-              return <option value={column.id} key={column.id}>{column.label}</option>
+              if(column.id !== 'thumbnailUrl') {
+                return <option value={column.id} key={column.id}>{column.label}</option>
+              }
             })}
           </select>
         </div>
@@ -181,7 +196,7 @@ function DataTable(props) {
               isItemLoaded
             }}
             className="List"
-            height={window.innerHeight - tableHeaderHeight}
+            height={tableHeight}
             itemCount={itemCount}
             itemSize={80}
             onItemsRendered={onItemsRendered}
