@@ -100,7 +100,8 @@ const DataTableBodyRow = function(props) {
       <div className="Rtable-cell select-item-cell">
         <input 
           type="checkbox" 
-          onChange={(e) => onRowCheckboxChange(e, row.id, handleRowCheckboxChange)} value={row.id}
+          onChange={(e) => onRowCheckboxChange(e, row.id, handleRowCheckboxChange)}
+          value={row.id}
           checked={rowsState[row.id] && rowsState[row.id].isChecked}
           className="js-row-checkbox"
         />

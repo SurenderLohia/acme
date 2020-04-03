@@ -13,11 +13,16 @@ function App() {
   const [hasNextPage, setHasNextPage] = useState([]);
   const [isNextPageLoading, setIsNextPageLoading] = useState([]);
   
-  async function fetchData({page = 1, limit = 12, isSearchQuery = false, searchText = ''} = {}) {
+  async function fetchData(...args) {
+    const page = args.length === 0 ? 1 : ((args[0] + 10) / 10);
+    const limit = 10;
+    const argQuery = args[1];
+    const searchText = argQuery && argQuery.searchText;
     let query = `?_page=${page}&_limit=${limit}`;
-    if(isSearchQuery) {
+
+    if(searchText) {
       query += `&q=${searchText}`;
-    } 
+    }
     
     const result = await fetch((PHOTOS_URL + query));
     const json = await result.json();
@@ -25,18 +30,16 @@ function App() {
     setHasNextPage(rows.length < TOTAL_ROWS);
     setIsNextPageLoading(false);
 
-    // If: First it's time search then replase rows with search result rows
-    if(isSearchQuery && page === 1) {
-      console.log('comes here');
-      setRows(json);
+    // If: It's a first page while init or on searchFiter then replase rows with current result
+    if(page === 1) {
+      setRows(json);  
     } else {
-      // else append result with exsisting rows
       setRows([...rows, ...json]);
     }
   }
-
-  const _loadNextPage = (query) => {
-    fetchData(query);
+  
+  const _loadNextPage = (...args) => {
+    fetchData(...args);
   };
 
   useEffect(() => {

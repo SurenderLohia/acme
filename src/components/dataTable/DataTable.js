@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import { FixedSizeList as List } from 'react-window';
 import InfiniteLoader from "react-window-infinite-loader";
 
@@ -7,21 +7,28 @@ import './data-table.css';
 import DataTableHeaderRow from './DataTableHeaderRow';
 import DataTableBodyRow from './DataTableBodyRow';
 
-const getRowsInitialState = function(rows = []) {
-  const rowsInitialState = {};
+const formatRowsState = function(rowsState, rows = []) {
+  const formatedRowState = {};
+
   rows.forEach(row => {
     const rowId = row.id;
-    const minimalRow = { isChecked: false }
-    rowsInitialState[rowId] = minimalRow;
+    if(!rowsState[rowId]) {
+      const newProps = { isChecked: false }
+      formatedRowState[rowId] = Object.assign({}, row, newProps);
+    } else {
+      formatedRowState[rowId] = rowsState[rowId];
+    }
   });
-
-  return rowsInitialState;
+  
+  return formatedRowState;
 }
 
 function DataTable(props) {
-  const [ rowsState,  setRowsState ] = useState(getRowsInitialState(props.rows));
-  const [ page, setPage ] = useState(props.page);
+  const [ rowsState,  setRowsState ] = useState({});
   const [ searchText, setSearchText ] = useState('');
+
+  const infiniteLoaderRef = useRef(null);
+  const hasMountedRef = useRef(false);
 
   const {
     rows,
@@ -46,7 +53,7 @@ function DataTable(props) {
 
   const handleRowCheckboxChange = (e, id) => {
     const isChecked = e.target.checked;
-    const newRowsState = {...rowsState};
+    const newRowsState = Object.assign({}, rowsState);
 
     newRowsState[id].isChecked = isChecked;
 
@@ -74,9 +81,27 @@ function DataTable(props) {
   }
 
   useEffect(() => {
+    setRowsState(formatRowsState(rowsState, props.rows));
+    console.log('test: prop.rows chaged');
+  }, [props.rows]);
+
+  useEffect(() => {
     const selectedRows = getSelctedRows(rowsState);
     props.onSelectionChange(selectedRows);
-  }, [props, rowsState]);
+  }, [rowsState]);
+
+
+  // Each time the searchText changed we called the method resetloadMoreItemsCache to clear the cache
+  useEffect(() => {
+    // We only need to reset cached items when "searchText" changes.
+    // This effect will run on mount too; there's no need to reset in that case.
+    if (hasMountedRef.current) {
+      if (infiniteLoaderRef.current) {
+        infiniteLoaderRef.current.resetloadMoreItemsCache();
+      }
+    }
+    hasMountedRef.current = true;
+  }, [searchText]);
 
   const outterPadding = 40;
   const tableHeaderHeight = 50 + outterPadding;
@@ -85,27 +110,20 @@ function DataTable(props) {
 
   // If there are more items to be loaded then add an extra row to hold a loading indicator.
   const itemCount = hasNextPage ? rows.length + 1 : rows.length;
-  console.log('itemCount', itemCount);
 
   // Only load 1 page of items at a time.
   // Pass an empty callback to InfiniteLoader in case it asks us to load more than once.
-  console.log('isNextPageLoading', isNextPageLoading);
   const loadMoreItems = isNextPageLoading ? () => {} : loadNextPage;
 
   // Every row is loaded except for our loading indicator row.
   const isItemLoaded = index => !hasNextPage || index < rows.length;
-  //console.log('isItemLoaded', isItemLoaded(index));
 
-  const onLoadMoreItems = (query) => {
-    if(!isNextPageLoading) {
-      if(!query.isSearchQuery) {
-        query.page += 1;
-        setPage(query.page);
-      }
+  const onLoadMoreItems = (args) => {
+    const query = {
+      searchText
     }
     
-    console.log('page', query.page);
-    loadMoreItems(query);
+    loadMoreItems(args, query);
   }
 
   const onSearchTextChange = (e) => {
@@ -114,14 +132,12 @@ function DataTable(props) {
 
   const onSearchSubmit = (e) => {
     e.preventDefault();
-    const serachQuery = {
-      isSearchQuery: true,
-      searchText,
-      page: 1
+
+    const query = {
+      searchText
     }
-    
-    setPage(2);
-    onLoadMoreItems(serachQuery);
+
+    loadMoreItems([], query);
   }
 
   return(
@@ -150,9 +166,10 @@ function DataTable(props) {
           handleSelectAllChange={handleSelectAllChange}
         />
         <InfiniteLoader
+          ref={infiniteLoaderRef}
           isItemLoaded={isItemLoaded}
           itemCount={itemCount}
-          loadMoreItems={() => onLoadMoreItems({page: page})}
+          loadMoreItems={(args) => onLoadMoreItems(args)}
         >
           {({ onItemsRendered, ref }) => (
           <List
@@ -179,9 +196,5 @@ function DataTable(props) {
     </div>
   )
 };
-
-DataTable.defaultProps = {
-  page: 1
-}
 
 export default DataTable;
