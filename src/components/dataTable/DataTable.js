@@ -82,7 +82,6 @@ function DataTable(props) {
 
   useEffect(() => {
     setRowsState(formatRowsState(rowsState, props.rows));
-    console.log('test: prop.rows chaged');
   }, [props.rows]);
 
   useEffect(() => {
